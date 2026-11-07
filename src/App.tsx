@@ -4,6 +4,7 @@ import LoginPage from '@/pages/auth/LoginPage'
 import TwoFactorPage from '@/pages/auth/TwoFactorPage'
 import AppShell from '@/components/layout/AppShell'
 import DashboardPage from '@/pages/dashboard/DashboardPage'
+import PatientsPage from '@/pages/patients/PatientsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -22,20 +23,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/2fa"   element={<TwoFactorPage />} />
-
-        {/* Protected — all pages inside AppShell */}
-        <Route
-          element={
-            <PrivateRoute>
-              <AppShell />
-            </PrivateRoute>
-          }
-        >
+        <Route element={<PrivateRoute><AppShell /></PrivateRoute>}>
           <Route path="/dashboard"       element={<DashboardPage />} />
-          <Route path="/patients/*"      element={<Soon title="Patients" />} />
+          <Route path="/patients"        element={<PatientsPage />} />
           <Route path="/appointments"    element={<Soon title="Appointments" />} />
           <Route path="/providers"       element={<Soon title="Providers" />} />
           <Route path="/encounters"      element={<Soon title="Encounters" />} />
@@ -50,7 +42,6 @@ export default function App() {
           <Route path="/settings"        element={<Soon title="Settings" />} />
           <Route path="/audit-logs"      element={<Soon title="Audit Logs" />} />
         </Route>
-
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
