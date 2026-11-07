@@ -7,11 +7,11 @@ import { cn } from '@/lib/utils'
 import type { AuthResponse } from '@/types'
 
 export default function LoginPage() {
-  const [email, setEmail]           = useState('')
-  const [password, setPassword]     = useState('')
-  const [showPass, setShowPass]     = useState(false)
-  const [error, setError]           = useState('')
-  const [loading, setLoading]       = useState(false)
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const [showPass, setShowPass] = useState(false)
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
   const navigate = useNavigate()
   const setAuth  = useAuthStore(s => s.setAuth)
 
@@ -20,7 +20,11 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
     try {
-      const { data } = await api.post<AuthResponse>('/auth/login', { email, password })
+      const { data } = await api.post<AuthResponse>('/auth/login', {
+        email,
+        password,
+        device_name: navigator.userAgent.slice(0, 255),
+      })
 
       if (data.requires_2fa) {
         navigate('/2fa', { state: { two_factor_token: data.two_factor_token } })
@@ -30,9 +34,11 @@ export default function LoginPage() {
       setAuth(data.token, data.user)
       navigate('/dashboard')
     } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } }
       const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message
-        ?? 'Invalid credentials.'
+        e?.response?.data?.message ??
+        Object.values(e?.response?.data?.errors ?? {})[0]?.[0] ??
+        'Login failed.'
       setError(msg)
     } finally {
       setLoading(false)
@@ -130,9 +136,7 @@ export default function LoginPage() {
                   tabIndex={-1}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
-                  {showPass
-                    ? <EyeOff className="w-4 h-4" />
-                    : <Eye className="w-4 h-4" />}
+                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
