@@ -3,6 +3,7 @@ import { useAuthStore } from '@/store/authStore'
 import LoginPage from '@/pages/auth/LoginPage'
 import TwoFactorPage from '@/pages/auth/TwoFactorPage'
 import AppShell from '@/components/layout/AppShell'
+import DashboardPage from '@/pages/dashboard/DashboardPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -33,7 +34,7 @@ export default function App() {
             </PrivateRoute>
           }
         >
-          <Route path="/dashboard"       element={<Soon title="Dashboard" />} />
+          <Route path="/dashboard"       element={<DashboardPage />} />
           <Route path="/patients/*"      element={<Soon title="Patients" />} />
           <Route path="/appointments"    element={<Soon title="Appointments" />} />
           <Route path="/providers"       element={<Soon title="Providers" />} />
@@ -50,7 +51,7 @@ export default function App() {
           <Route path="/audit-logs"      element={<Soon title="Audit Logs" />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )
