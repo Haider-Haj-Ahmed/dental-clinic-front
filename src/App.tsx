@@ -2,26 +2,54 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import LoginPage from '@/pages/auth/LoginPage'
 import TwoFactorPage from '@/pages/auth/TwoFactorPage'
+import AppShell from '@/components/layout/AppShell'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
 }
 
+function Soon({ title }: { title: string }) {
+  return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-zinc-600 text-sm">{title} — coming soon</p>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/2fa" element={<TwoFactorPage />} />
+        <Route path="/2fa"   element={<TwoFactorPage />} />
+
+        {/* Protected — all pages inside AppShell */}
         <Route
-          path="/dashboard"
           element={
             <PrivateRoute>
-              <div className="p-8 text-white">Dashboard — coming soon</div>
+              <AppShell />
             </PrivateRoute>
           }
-        />
+        >
+          <Route path="/dashboard"       element={<Soon title="Dashboard" />} />
+          <Route path="/patients/*"      element={<Soon title="Patients" />} />
+          <Route path="/appointments"    element={<Soon title="Appointments" />} />
+          <Route path="/providers"       element={<Soon title="Providers" />} />
+          <Route path="/encounters"      element={<Soon title="Encounters" />} />
+          <Route path="/treatment-plans" element={<Soon title="Treatment Plans" />} />
+          <Route path="/prescriptions"   element={<Soon title="Prescriptions" />} />
+          <Route path="/invoices"        element={<Soon title="Invoices" />} />
+          <Route path="/payments"        element={<Soon title="Payments" />} />
+          <Route path="/inventory"       element={<Soon title="Inventory" />} />
+          <Route path="/suppliers"       element={<Soon title="Suppliers" />} />
+          <Route path="/reports"         element={<Soon title="Reports" />} />
+          <Route path="/users"           element={<Soon title="Staff" />} />
+          <Route path="/settings"        element={<Soon title="Settings" />} />
+          <Route path="/audit-logs"      element={<Soon title="Audit Logs" />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
