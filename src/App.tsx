@@ -5,6 +5,7 @@ import TwoFactorPage from '@/pages/auth/TwoFactorPage'
 import AppShell from '@/components/layout/AppShell'
 import DashboardPage from '@/pages/dashboard/DashboardPage'
 import PatientsPage from '@/pages/patients/PatientsPage'
+import PatientDetailPage from '@/pages/patients/PatientDetailPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -12,11 +13,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 }
 
 function Soon({ title }: { title: string }) {
-  return (
-    <div className="flex items-center justify-center h-64">
-      <p className="text-zinc-600 text-sm">{title} — coming soon</p>
-    </div>
-  )
+  return <div className="flex items-center justify-center h-64"><p className="text-zinc-600 text-sm">{title} — coming soon</p></div>
 }
 
 export default function App() {
@@ -28,6 +25,7 @@ export default function App() {
         <Route element={<PrivateRoute><AppShell /></PrivateRoute>}>
           <Route path="/dashboard"       element={<DashboardPage />} />
           <Route path="/patients"        element={<PatientsPage />} />
+          <Route path="/patients/:id"    element={<PatientDetailPage />} />
           <Route path="/appointments"    element={<Soon title="Appointments" />} />
           <Route path="/providers"       element={<Soon title="Providers" />} />
           <Route path="/encounters"      element={<Soon title="Encounters" />} />
