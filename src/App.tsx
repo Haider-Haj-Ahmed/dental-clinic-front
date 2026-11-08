@@ -7,6 +7,7 @@ import DashboardPage from '@/pages/dashboard/DashboardPage'
 import PatientsPage from '@/pages/patients/PatientsPage'
 import PatientDetailPage from '@/pages/patients/PatientDetailPage'
 import AppointmentsPage from '@/pages/appointments/AppointmentsPage'
+import ProvidersPage from '@/pages/providers/ProvidersPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -28,7 +29,7 @@ export default function App() {
           <Route path="/patients"        element={<PatientsPage />} />
           <Route path="/patients/:id"    element={<PatientDetailPage />} />
           <Route path="/appointments"    element={<AppointmentsPage />} />
-          <Route path="/providers"       element={<Soon title="Providers" />} />
+          <Route path="/providers"       element={<ProvidersPage />} />
           <Route path="/encounters"      element={<Soon title="Encounters" />} />
           <Route path="/treatment-plans" element={<Soon title="Treatment Plans" />} />
           <Route path="/prescriptions"   element={<Soon title="Prescriptions" />} />
