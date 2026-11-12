@@ -13,6 +13,9 @@ import InventoryPage from '@/pages/inventory/InventoryPage'
 import SuppliersPage from '@/pages/suppliers/SuppliersPage'
 import StaffPage from '@/pages/users/StaffPage'
 import SettingsPage from '@/pages/settings/SettingsPage'
+import PaymentsPage from '@/pages/payments/PaymentsPage'
+import ReportsPage from '@/pages/reports/ReportsPage'
+import AuditLogsPage from '@/pages/audit/AuditLogsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -36,16 +39,16 @@ export default function App() {
           <Route path="/appointments"    element={<AppointmentsPage />} />
           <Route path="/providers"       element={<ProvidersPage />} />
           <Route path="/invoices"        element={<InvoicesPage />} />
+          <Route path="/payments"        element={<PaymentsPage />} />
           <Route path="/inventory"       element={<InventoryPage />} />
           <Route path="/suppliers"       element={<SuppliersPage />} />
           <Route path="/users"           element={<StaffPage />} />
           <Route path="/settings"        element={<SettingsPage />} />
+          <Route path="/reports"         element={<ReportsPage />} />
+          <Route path="/audit-logs"      element={<AuditLogsPage />} />
           <Route path="/encounters"      element={<Soon title="Encounters" />} />
           <Route path="/treatment-plans" element={<Soon title="Treatment Plans" />} />
           <Route path="/prescriptions"   element={<Soon title="Prescriptions" />} />
-          <Route path="/payments"        element={<Soon title="Payments" />} />
-          <Route path="/reports"         element={<Soon title="Reports" />} />
-          <Route path="/audit-logs"      element={<Soon title="Audit Logs" />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
