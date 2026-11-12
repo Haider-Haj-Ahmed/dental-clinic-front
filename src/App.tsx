@@ -16,14 +16,13 @@ import SettingsPage from '@/pages/settings/SettingsPage'
 import PaymentsPage from '@/pages/payments/PaymentsPage'
 import ReportsPage from '@/pages/reports/ReportsPage'
 import AuditLogsPage from '@/pages/audit/AuditLogsPage'
+import EncountersPage from '@/pages/encounters/EncountersPage'
+import TreatmentPlansPage from '@/pages/treatment-plans/TreatmentPlansPage'
+import PrescriptionsPage from '@/pages/prescriptions/PrescriptionsPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
-}
-
-function Soon({ title }: { title: string }) {
-  return <div className="flex items-center justify-center h-64"><p className="text-zinc-600 text-sm">{title} — coming soon</p></div>
 }
 
 export default function App() {
@@ -38,6 +37,9 @@ export default function App() {
           <Route path="/patients/:id"    element={<PatientDetailPage />} />
           <Route path="/appointments"    element={<AppointmentsPage />} />
           <Route path="/providers"       element={<ProvidersPage />} />
+          <Route path="/encounters"      element={<EncountersPage />} />
+          <Route path="/treatment-plans" element={<TreatmentPlansPage />} />
+          <Route path="/prescriptions"   element={<PrescriptionsPage />} />
           <Route path="/invoices"        element={<InvoicesPage />} />
           <Route path="/payments"        element={<PaymentsPage />} />
           <Route path="/inventory"       element={<InventoryPage />} />
@@ -46,9 +48,6 @@ export default function App() {
           <Route path="/settings"        element={<SettingsPage />} />
           <Route path="/reports"         element={<ReportsPage />} />
           <Route path="/audit-logs"      element={<AuditLogsPage />} />
-          <Route path="/encounters"      element={<Soon title="Encounters" />} />
-          <Route path="/treatment-plans" element={<Soon title="Treatment Plans" />} />
-          <Route path="/prescriptions"   element={<Soon title="Prescriptions" />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
