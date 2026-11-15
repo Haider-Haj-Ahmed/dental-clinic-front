@@ -11,6 +11,7 @@ import PatientsPage from '@/pages/patients/PatientsPage'
 import PatientDetailPage from '@/pages/patients/PatientDetailPage'
 import AppointmentsPage from '@/pages/appointments/AppointmentsPage'
 import ProvidersPage from '@/pages/providers/ProvidersPage'
+import RecallsPage from '@/pages/recalls/RecallsPage'
 import EncountersPage from '@/pages/encounters/EncountersPage'
 import TreatmentPlansPage from '@/pages/treatment-plans/TreatmentPlansPage'
 import PrescriptionsPage from '@/pages/prescriptions/PrescriptionsPage'
@@ -41,15 +42,6 @@ function PortalPrivateRoute({ children }: { children: React.ReactNode }) {
   return isAuthenticated ? <>{children}</> : <Navigate to="/portal/login" replace />
 }
 
-function Soon({ title }: { title: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-64 gap-3">
-      <p className="text-zinc-600 text-sm">{title}</p>
-      <p className="text-zinc-700 text-xs">Coming soon</p>
-    </div>
-  )
-}
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -63,7 +55,7 @@ export default function App() {
           <Route path="/patients/:id"    element={<PatientDetailPage />} />
           <Route path="/appointments"    element={<AppointmentsPage />} />
           <Route path="/providers"       element={<ProvidersPage />} />
-          <Route path="/recalls"         element={<Soon title="Recalls" />} />
+          <Route path="/recalls"         element={<RecallsPage />} />
           <Route path="/encounters"      element={<EncountersPage />} />
           <Route path="/treatment-plans" element={<TreatmentPlansPage />} />
           <Route path="/prescriptions"   element={<PrescriptionsPage />} />
