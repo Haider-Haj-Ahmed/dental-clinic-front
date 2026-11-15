@@ -23,12 +23,11 @@ export default function AppShell() {
     <div className="min-h-screen bg-[#0a0c14]">
       <Sidebar collapsed={collapsed} onToggle={toggle} />
       <Topbar sidebarCollapsed={collapsed} />
-      <main
-        className={cn(
-          'pt-14 min-h-screen transition-all duration-300',
-          collapsed ? 'ml-16' : 'ml-60',
-        )}
-      >
+      {/* pt-14 = topbar height, ml-[68px]/ml-64 matches sidebar widths */}
+      <main className={cn(
+        'pt-14 min-h-screen transition-all duration-300',
+        collapsed ? 'ml-[68px]' : 'ml-64',
+      )}>
         <div className="p-6">
           <Outlet />
         </div>
