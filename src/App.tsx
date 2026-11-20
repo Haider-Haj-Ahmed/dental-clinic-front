@@ -31,12 +31,12 @@ import PortalHomePage from '@/portal/pages/home/PortalHomePage'
 import PortalAppointmentsPage from '@/portal/pages/appointments/PortalAppointmentsPage'
 import PortalInvoicesPage from '@/portal/pages/invoices/PortalInvoicesPage'
 import PortalPrescriptionsPage from '@/portal/pages/prescriptions/PortalPrescriptionsPage'
+import PortalProfilePage from '@/portal/pages/profile/PortalProfilePage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
 }
-
 function PortalPrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = usePortalAuthStore(s => s.isAuthenticated)
   return isAuthenticated ? <>{children}</> : <Navigate to="/portal/login" replace />
@@ -76,6 +76,7 @@ export default function App() {
           <Route path="/portal/appointments"  element={<PortalAppointmentsPage />} />
           <Route path="/portal/invoices"      element={<PortalInvoicesPage />} />
           <Route path="/portal/prescriptions" element={<PortalPrescriptionsPage />} />
+          <Route path="/portal/profile"       element={<PortalProfilePage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
