@@ -1,15 +1,16 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-import { CalendarDays, FileText, Pill, Home, LogOut } from 'lucide-react'
+import { CalendarDays, FileText, Pill, Home, LogOut, User } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { portalApi } from '@/portal/lib/portalApi'
 import { usePortalAuthStore } from '@/portal/store/portalAuthStore'
 import { cn } from '@/lib/utils'
 
 const NAV = [
-  { to: '/portal',              label: 'Home',            icon: Home         },
-  { to: '/portal/appointments', label: 'Appointments',    icon: CalendarDays },
-  { to: '/portal/invoices',     label: 'Invoices',        icon: FileText     },
-  { to: '/portal/prescriptions',label: 'Prescriptions',   icon: Pill         },
+  { to: '/portal',               label: 'Home',          icon: Home         },
+  { to: '/portal/appointments',  label: 'Appointments',  icon: CalendarDays },
+  { to: '/portal/invoices',      label: 'Invoices',      icon: FileText     },
+  { to: '/portal/prescriptions', label: 'Prescriptions', icon: Pill         },
+  { to: '/portal/profile',       label: 'Profile',       icon: User         },
 ]
 
 export default function PortalShell() {
@@ -61,7 +62,7 @@ export default function PortalShell() {
               )}>
               {({ isActive }) => (
                 <>
-                  <Icon className="w-4.5 h-4.5" style={{ width: '1.125rem', height: '1.125rem' }} strokeWidth={isActive ? 2 : 1.6} />
+                  <Icon style={{ width: '1.125rem', height: '1.125rem' }} strokeWidth={isActive ? 2 : 1.6} />
                   {label}
                 </>
               )}
