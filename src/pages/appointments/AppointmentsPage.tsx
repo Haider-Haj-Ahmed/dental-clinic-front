@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Plus, Search, ChevronLeft, ChevronRight,
-  Loader2, X, AlertCircle, Check, Ban, UserX, Clock, Edit2,
+  Loader2, X, AlertCircle, Check, Ban, UserX, Clock, Edit2, Trash2,
 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
@@ -182,6 +182,11 @@ export default function AppointmentsPage() {
     onSuccess: ()=>qc.invalidateQueries({queryKey:['appointments']}),
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => api.delete(`/appointments/${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['appointments'] }),
+  })
+
   function changeStatus(id: number, s: Status) { statusMutation.mutate({id,s}) }
   function onFilter(v: string) { setStatus(v); setPage(1) }
 
@@ -234,6 +239,13 @@ export default function AppointmentsPage() {
                             {busy?<Loader2 className="w-3 h-3 animate-spin"/>:<Icon className="w-3 h-3" strokeWidth={2}/>}{t.label}
                           </button>)
                         })}
+                        {/* Delete for terminal statuses */}
+                        {(a.status==='cancelled'||a.status==='no_show')&&(
+                          <button onClick={()=>{if(confirm('Delete this appointment?'))deleteMutation.mutate(a.id)}} disabled={deleteMutation.isPending}
+                            className="flex items-center gap-1 h-7 px-2 rounded-md text-xs text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Delete">
+                            {deleteMutation.isPending&&deleteMutation.variables===a.id?<Loader2 className="w-3 h-3 animate-spin"/>:<Trash2 className="w-3.5 h-3.5" strokeWidth={1.8}/>}
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
