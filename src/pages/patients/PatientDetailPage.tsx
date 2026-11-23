@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  ArrowLeft, Edit2, UserX, UserCheck, AlertCircle, Loader2,
+  ArrowLeft, Edit2, UserX, UserCheck, AlertCircle, Loader2, Trash2,
   Plus, X, Shield, Activity, Pill, Users, FileText,
   Clock, DollarSign,
 } from 'lucide-react'
@@ -199,6 +199,7 @@ export default function PatientDetailPage(){
 
   const archiveMutation=useMutation({mutationFn:()=>api.post(`/patients/${id}/archive`),onSuccess:()=>{qc.invalidateQueries({queryKey:['patient',Number(id)]});qc.invalidateQueries({queryKey:['patients']})}})
   const restoreMutation=useMutation({mutationFn:()=>api.post(`/patients/${id}/restore`),onSuccess:()=>{qc.invalidateQueries({queryKey:['patient',Number(id)]});qc.invalidateQueries({queryKey:['patients']})}})
+  const purgeMutation=useMutation({mutationFn:()=>api.delete(`/patients/${id}/purge`),onSuccess:()=>{qc.invalidateQueries({queryKey:['patients']});navigate('/patients')}})
 
   if(isLoading)return <div className="max-w-4xl space-y-5 animate-pulse"><div className="h-4 w-28 bg-white/[0.05] rounded"/><div className="bg-[#0f1120] border border-white/[0.07] rounded-xl p-6 h-32"/></div>
   if(isError||!patient)return(<div className="flex flex-col items-center justify-center h-64 gap-3"><AlertCircle className="w-7 h-7 text-red-500/50"/><p className="text-zinc-500 text-sm">Patient not found.</p><button onClick={()=>navigate('/patients')} className="text-indigo-400 hover:text-indigo-300 text-sm transition-colors">← Back to Patients</button></div>)
@@ -232,6 +233,7 @@ export default function PatientDetailPage(){
             <button onClick={()=>setEdit(true)} className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs text-zinc-300 border border-white/[0.08] hover:bg-white/[0.06] transition-colors"><Edit2 className="w-3.5 h-3.5" strokeWidth={1.8}/> Edit</button>
             {patient.is_active&&<button onClick={()=>archiveMutation.mutate()} disabled={archiveMutation.isPending} className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs text-red-400 border border-red-500/20 hover:bg-red-500/10 transition-colors disabled:opacity-50">{archiveMutation.isPending?<Loader2 className="w-3.5 h-3.5 animate-spin"/>:<UserX className="w-3.5 h-3.5" strokeWidth={1.8}/>} Archive</button>}
             {!patient.is_active&&<button onClick={()=>restoreMutation.mutate()} disabled={restoreMutation.isPending} className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/10 transition-colors disabled:opacity-50">{restoreMutation.isPending?<Loader2 className="w-3.5 h-3.5 animate-spin"/>:<UserCheck className="w-3.5 h-3.5" strokeWidth={1.8}/>} Restore</button>}
+            {!patient.is_active&&<button onClick={()=>{if(confirm(`Permanently delete ${patient.full_name}? This cannot be undone.`))purgeMutation.mutate()}} disabled={purgeMutation.isPending} className="flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs text-red-500 border border-red-500/30 hover:bg-red-500/10 transition-colors disabled:opacity-50">{purgeMutation.isPending?<Loader2 className="w-3.5 h-3.5 animate-spin"/>:<Trash2 className="w-3.5 h-3.5" strokeWidth={1.8}/>} Purge</button>}
           </div>
         </div>
       </div>
