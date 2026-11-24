@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight, Trash2, Loader2, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Trash2, Loader2, X, Search } from 'lucide-react'
 import { api } from '@/lib/api'
 import { cn } from '@/lib/utils'
+import { useDebounce } from '@/hooks/useDebounce'
 import type { PaginatedResponse } from '@/types'
 
 interface Payment {
@@ -21,15 +22,18 @@ function fmtCurrency(n: number) {
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
-function invoiceNo(id: number) { return `#${String(id).padStart(5,'0')}` }
+function invoiceNo(id: number) { return `#${String(id).padStart(5, '0')}` }
 
 export default function PaymentsPage() {
+  const [search, setSearch]     = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo]     = useState('')
   const [page, setPage]         = useState(1)
+  const dSearch = useDebounce(search, 350)
   const qc = useQueryClient()
 
-  const params: Record<string,string> = { page: String(page) }
+  const params: Record<string, string> = { page: String(page) }
+  if (dSearch)  params.search    = dSearch
   if (dateFrom) params.date_from = dateFrom
   if (dateTo)   params.date_to   = dateTo
 
@@ -48,8 +52,12 @@ export default function PaymentsPage() {
   const meta     = data?.meta
   const total    = payments.reduce((s, p) => s + p.amount, 0)
 
+  function clearFilters() { setSearch(''); setDateFrom(''); setDateTo(''); setPage(1) }
+  const hasFilters = search || dateFrom || dateTo
+
   return (
     <div className="max-w-6xl space-y-5">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-white font-semibold">Payments</h2>
@@ -63,35 +71,49 @@ export default function PaymentsPage() {
         )}
       </div>
 
-      {/* Date filters */}
+      {/* Filters */}
       <div className="flex items-center gap-2 flex-wrap">
+        {/* Patient search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1) }}
+            placeholder="Search patient name…"
+            className="h-9 pl-9 pr-3 w-52 rounded-lg text-sm text-white bg-white/[0.04] border border-white/[0.08] placeholder:text-zinc-600 outline-none focus:border-indigo-500/40 transition-all"
+          />
+        </div>
+        {/* Date range */}
         <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(1) }}
           className="h-9 px-3 rounded-lg text-sm text-white bg-white/[0.04] border border-white/[0.08] outline-none focus:border-indigo-500/40 transition-all" />
         <span className="text-zinc-600 text-xs">to</span>
         <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(1) }}
           className="h-9 px-3 rounded-lg text-sm text-white bg-white/[0.04] border border-white/[0.08] outline-none focus:border-indigo-500/40 transition-all" />
-        {(dateFrom || dateTo) && (
-          <button onClick={() => { setDateFrom(''); setDateTo(''); setPage(1) }} className="text-zinc-500 hover:text-zinc-300 transition-colors"><X className="w-4 h-4" /></button>
+        {hasFilters && (
+          <button onClick={clearFilters} className="text-zinc-500 hover:text-zinc-300 transition-colors"><X className="w-4 h-4" /></button>
         )}
       </div>
 
+      {/* Table */}
       <div className="bg-[#0f1120] border border-white/[0.07] rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                {['ID','Patient','Invoice','Amount','Method','Date','Recorded By',''].map(h => (
+                {['ID', 'Patient', 'Invoice', 'Amount', 'Method', 'Date', 'Recorded By', ''].map(h => (
                   <th key={h} className="text-left text-[11px] font-semibold text-zinc-500 uppercase tracking-wider px-4 py-3 whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {isLoading && Array(8).fill(0).map((_,i) => (
+              {isLoading && Array(8).fill(0).map((_, i) => (
                 <tr key={i} className="border-b border-white/[0.04]">
-                  {Array(8).fill(0).map((_,j) => <td key={j} className="px-4 py-3.5"><div className="h-3 bg-white/[0.05] rounded animate-pulse w-20" /></td>)}
+                  {Array(8).fill(0).map((_, j) => <td key={j} className="px-4 py-3.5"><div className="h-3 bg-white/[0.05] rounded animate-pulse w-20" /></td>)}
                 </tr>
               ))}
-              {!isLoading && payments.length === 0 && <tr><td colSpan={8} className="px-4 py-16 text-center text-zinc-600 text-sm">No payments found</td></tr>}
+              {!isLoading && payments.length === 0 && (
+                <tr><td colSpan={8} className="px-4 py-16 text-center text-zinc-600 text-sm">No payments found</td></tr>
+              )}
               {!isLoading && payments.map(p => (
                 <tr key={p.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors group">
                   <td className="px-4 py-3 text-zinc-600 text-xs font-mono">#{p.id}</td>
@@ -103,13 +125,13 @@ export default function PaymentsPage() {
                   <td className="px-4 py-3">
                     {p.payment_method
                       ? <span className="text-xs text-zinc-300 bg-white/[0.05] border border-white/[0.07] rounded px-2 py-0.5">{p.payment_method.name}</span>
-                      : <span className="text-zinc-700 text-xs">—</span>
-                    }
+                      : <span className="text-zinc-700 text-xs">—</span>}
                   </td>
                   <td className="px-4 py-3 text-zinc-400 text-xs whitespace-nowrap">{fmtDate(p.paid_at)}</td>
                   <td className="px-4 py-3 text-zinc-500 text-xs">{p.recorded_by?.name ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => { if (confirm('Delete this payment? The invoice status will be recalculated.')) deleteMutation.mutate(p.id) }}
+                    <button
+                      onClick={() => { if (confirm('Delete this payment? The invoice balance will be recalculated.')) deleteMutation.mutate(p.id) }}
                       disabled={deleteMutation.isPending}
                       className="opacity-0 group-hover:opacity-100 w-7 h-7 rounded-lg flex items-center justify-center text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-all">
                       <Trash2 className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -120,13 +142,14 @@ export default function PaymentsPage() {
             </tbody>
           </table>
         </div>
+
         {meta && meta.last_page > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.06]">
-            <p className="text-zinc-600 text-xs">{((meta.current_page-1)*meta.per_page)+1}–{Math.min(meta.current_page*meta.per_page,meta.total)} of {meta.total}</p>
+            <p className="text-zinc-600 text-xs">{((meta.current_page - 1) * meta.per_page) + 1}–{Math.min(meta.current_page * meta.per_page, meta.total)} of {meta.total}</p>
             <div className="flex items-center gap-1">
-              <button onClick={() => setPage(p=>Math.max(1,p-1))} disabled={meta.current_page===1} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={meta.current_page === 1} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
               <span className="text-zinc-500 text-xs px-2">{meta.current_page} / {meta.last_page}</span>
-              <button onClick={() => setPage(p=>Math.min(meta.last_page,p+1))} disabled={meta.current_page===meta.last_page} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+              <button onClick={() => setPage(p => Math.min(meta.last_page, p + 1))} disabled={meta.current_page === meta.last_page} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 transition-colors"><ChevronRight className="w-4 h-4" /></button>
             </div>
           </div>
         )}
