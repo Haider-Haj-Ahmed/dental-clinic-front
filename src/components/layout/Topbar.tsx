@@ -24,21 +24,13 @@ interface Session {
   is_current?: boolean
 }
 
-const PAGE_TITLES: Record<string, string> = {
-  '/dashboard':'/dashboard','/patients':'Patients','/appointments':'Appointments',
-  '/providers':'Providers','/recalls':'Recalls','/encounters':'Encounters',
-  '/treatment-plans':'Treatment Plans','/prescriptions':'Prescriptions',
-  '/invoices':'Invoices','/payments':'Payments','/inventory':'Inventory',
-  '/suppliers':'Suppliers','/reports':'Reports','/users':'Staff',
-  '/settings':'Settings','/audit-logs':'Audit Logs',
-}
 const FRIENDLY: Record<string, string> = {
   '/dashboard':'Dashboard','/patients':'Patients','/appointments':'Appointments',
   '/providers':'Providers','/recalls':'Recalls','/encounters':'Encounters',
   '/treatment-plans':'Treatment Plans','/prescriptions':'Prescriptions',
-  '/invoices':'Invoices','/payments':'Payments','/inventory':'Inventory',
-  '/suppliers':'Suppliers','/reports':'Reports','/users':'Staff',
-  '/settings':'Settings','/audit-logs':'Audit Logs',
+  '/invoices':'Invoices','/payments':'Payments','/payment-plans':'Payment Plans',
+  '/inventory':'Inventory','/suppliers':'Suppliers','/reports':'Reports',
+  '/users':'Staff','/settings':'Settings','/audit-logs':'Audit Logs',
 }
 const ROLE_LABEL: Record<string, string> = {
   owner:'Owner', provider:'Provider', receptionist:'Receptionist', assistant:'Assistant',
