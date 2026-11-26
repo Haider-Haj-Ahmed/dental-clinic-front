@@ -16,6 +16,7 @@ import EncountersPage from '@/pages/encounters/EncountersPage'
 import TreatmentPlansPage from '@/pages/treatment-plans/TreatmentPlansPage'
 import PrescriptionsPage from '@/pages/prescriptions/PrescriptionsPage'
 import InvoicesPage from '@/pages/invoices/InvoicesPage'
+import PaymentPlansPage from '@/pages/payment-plans/PaymentPlansPage'
 import PaymentsPage from '@/pages/payments/PaymentsPage'
 import InventoryPage from '@/pages/inventory/InventoryPage'
 import SuppliersPage from '@/pages/suppliers/SuppliersPage'
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="/prescriptions"   element={<PrescriptionsPage />} />
           <Route path="/invoices"        element={<InvoicesPage />} />
           <Route path="/payments"        element={<PaymentsPage />} />
+          <Route path="/payment-plans"   element={<PaymentPlansPage />} />
           <Route path="/inventory"       element={<InventoryPage />} />
           <Route path="/suppliers"       element={<SuppliersPage />} />
           <Route path="/users"           element={<StaffPage />} />
