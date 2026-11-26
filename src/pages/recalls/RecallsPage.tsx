@@ -134,7 +134,7 @@ function RecallActions({ recall }: { recall: Recall }) {
   const qc = useQueryClient()
 
   const statusMutation = useMutation({
-    mutationFn: (status: RecallStatus) => api.patch(`/recalls/${recall.id}/status`, { status }),
+    mutationFn: (status: RecallStatus) => api.patch(`/recalls/${recall.id}`, { status }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['recalls'] }),
   })
   const reminderMutation = useMutation({
