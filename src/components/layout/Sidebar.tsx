@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import {
-  LayoutDashboard, Users, CalendarDays, Stethoscope,
+  LayoutDashboard, Users, CalendarDays, Stethoscope, Calendar,
   FileText, ClipboardList, Pill, Receipt, CreditCard,
   Package, Truck, BarChart2, UserCog, Settings, Shield,
   ChevronLeft, ChevronRight, Bell,
