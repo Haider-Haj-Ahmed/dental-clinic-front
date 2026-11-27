@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Users, CalendarDays, Stethoscope, Calendar,
-  FileText, ClipboardList, Pill, Receipt, CreditCard,
+  FileText, ClipboardList, Pill, Receipt, CreditCard, Calendar,
   Package, Truck, BarChart2, UserCog, Settings, Shield,
   ChevronLeft, ChevronRight, Bell,
 } from 'lucide-react'
@@ -39,7 +39,8 @@ const NAV: NavGroup[] = [
     section: 'Billing',
     items: [
       { label: 'Invoices', icon: Receipt,    to: '/invoices', roles: ['owner','receptionist'] },
-      { label: 'Payments', icon: CreditCard, to: '/payments', roles: ['owner','receptionist'] },
+      { label: 'Payments',       icon: CreditCard, to: '/payments',       roles: ['owner','receptionist'] },
+      { label: 'Payment Plans', icon: Calendar,   to: '/payment-plans', roles: ['owner','receptionist'] },
     ],
   },
   {
